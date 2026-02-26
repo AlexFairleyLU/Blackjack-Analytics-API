@@ -11,3 +11,4 @@ class GameSession(Base):
     started_at = Column(DateTime(timezone=True), server_default=func.now())
 
     user = relationship("User", backref="sessions")
+    hands = relationship("Hand", back_populates="session", cascade="all, delete")

@@ -1,8 +1,8 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from app.database import get_db
-from app.models.session import GameSession
-from app.models.user import User
+from app.models.session_model import GameSession
+from app.models.user_model import User
 from app.schemas.session_schema import SessionCreate, SessionResponse
 
 router = APIRouter(prefix="/sessions", tags=["Sessions"])

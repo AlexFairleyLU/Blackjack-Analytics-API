@@ -2,9 +2,9 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 from sqlalchemy import func
 from app.database import get_db
-from app.models.hand import Hand
-from app.models.session import GameSession
-from app.models.user import User
+from app.models.hand_model import Hand
+from app.models.session_model import GameSession
+from app.models.user_model import User
 
 router = APIRouter(prefix="/analytics", tags=["Analytics"])
 

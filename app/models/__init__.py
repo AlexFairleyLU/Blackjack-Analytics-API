@@ -1,3 +1,3 @@
-from . import user
-from . import session
-from . import hand
+from . import user_model
+from . import session_model
+from . import hand_model

@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.database import engine, Base
-from app.models import user
+from app.models import user_model
 from app.routes import user_routes, session_routes, hand_routes, analytics_routes
 
 app = FastAPI(title="Blackjack Analytics API")
