@@ -15,4 +15,4 @@ class Hand(Base):
     is_blackjack = Column(Boolean, default=False)
     is_win = Column(Boolean, nullable=False)
 
-    session = relationship("GameSession", backref="hands")
+    session = relationship("GameSession")
