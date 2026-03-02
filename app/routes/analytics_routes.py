@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import func
+from sqlalchemy import func, case
 from app.database import get_db
 from app.models.hand_model import Hand
 from app.models.session_model import GameSession
@@ -19,16 +19,16 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
         func.count(Hand.id).label("total_hands"),
         func.sum(Hand.bet_amount).label("total_bet"),
         func.sum(
-            func.case((Hand.is_win == True, Hand.bet_amount), else_=0)
+            case((Hand.is_win == True, Hand.bet_amount), else_=0)
         ).label("win_bet"),
         func.sum(
-            func.case((Hand.is_win == False, Hand.bet_amount), else_=0)
+            case((Hand.is_win == False, Hand.bet_amount), else_=0)
         ).label("loss_bet"),
         func.sum(
-            func.case((Hand.is_blackjack == True, 1), else_=0)
+            case((Hand.is_blackjack == True, 1), else_=0)
         ).label("blackjacks"),
         func.sum(
-            func.case((Hand.is_win == True, 1), else_=0)
+            case((Hand.is_win == True, 1), else_=0)
         ).label("wins")
     ).filter(Hand.session_id == session_id).one()
 
@@ -36,14 +36,14 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
     .filter(Hand.session_id == session_id)\
     .scalar() or 0
 
-    win_rate = (wins / total_hands * 100) if total_hands else 0
-    blackjack_rate = (blackjacks / total_hands * 100) if total_hands else 0
-    profit = win_bet - loss_bet
-    avg_bet = (total_bet / total_hands) if total_hands else 0
+    win_rate = (stats.wins / stats.total_hands * 100) if stats.total_hands else 0
+    blackjack_rate = (stats.blackjacks / stats.total_hands * 100) if stats.total_hands else 0
+    profit = stats.win_bet - stats.loss_bet
+    avg_bet = (stats.total_bet / stats.total_hands) if stats.total_hands else 0
 
     return {
         "session_id": session_id,
-        "total_hands": total_hands,
+        "total_hands": stats.total_hands,
         "win_rate": round(win_rate, 2),
         "blackjack_rate": round(blackjack_rate, 2),
         "profit": round(profit, 2),
