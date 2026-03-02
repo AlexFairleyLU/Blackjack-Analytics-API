@@ -6,39 +6,35 @@ from app.models.hand_model import Hand
 from app.models.session_model import GameSession
 from app.models.user_model import User
 
-router = APIRouter(prefix="/analytics", tags=["Analytics"])
+router = APIRouter(tags=["Analytics"])
 
-@router.get("/session/{session_id}")
+@router.get("/session/{session_id}/analytics")
 def session_analytics(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
 
-    total_hands = db.query(func.count(Hand.id)).filter(Hand.session_id == session_id).scalar()
-    wins = db.query(func.count(Hand.id)).filter(
-        Hand.session_id == session_id,
-        Hand.is_win == True
-    ).scalar()
+    stats = db.query(
+        func.count(Hand.id).label("total_hands"),
+        func.sum(Hand.bet_amount).label("total_bet"),
+        func.sum(
+            func.case((Hand.is_win == True, Hand.bet_amount), else_=0)
+        ).label("win_bet"),
+        func.sum(
+            func.case((Hand.is_win == False, Hand.bet_amount), else_=0)
+        ).label("loss_bet"),
+        func.sum(
+            func.case((Hand.is_blackjack == True, 1), else_=0)
+        ).label("blackjacks"),
+        func.sum(
+            func.case((Hand.is_win == True, 1), else_=0)
+        ).label("wins")
+    ).filter(Hand.session_id == session_id).one()
 
-    blackjacks = db.query(func.count(Hand.id)).filter(
-        Hand.session_id == session_id,
-        Hand.is_blackjack == True
-    ).scalar()
-
-    total_bet = db.query(func.sum(Hand.bet_amount)).filter(
-        Hand.session_id == session_id
-    ).scalar() or 0
-
-    win_bet = db.query(func.sum(Hand.bet_amount)).filter(
-        Hand.session_id == session_id,
-        Hand.is_win == True
-    ).scalar() or 0
-
-    loss_bet = db.query(func.sum(Hand.bet_amount)).filter(
-        Hand.session_id == session_id,
-        Hand.is_win == False
-    ).scalar() or 0
+    avg_player_score = db.query(func.avg(Hand.player_score))\
+    .filter(Hand.session_id == session_id)\
+    .scalar() or 0
 
     win_rate = (wins / total_hands * 100) if total_hands else 0
     blackjack_rate = (blackjacks / total_hands * 100) if total_hands else 0
@@ -51,10 +47,11 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
         "win_rate": round(win_rate, 2),
         "blackjack_rate": round(blackjack_rate, 2),
         "profit": round(profit, 2),
-        "average_bet": round(avg_bet, 2)
+        "average_bet": round(avg_bet, 2),
+        "average_player_score": round(avg_player_score, 2)
     }
 
-@router.get("/user/{user_id}")
+@router.get("/user/{user_id}/analytics")
 def user_analytics(user_id: int, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == user_id).first()
