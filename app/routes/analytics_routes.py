@@ -5,6 +5,7 @@ from app.database import get_db
 from app.models.hand_model import Hand
 from app.models.session_model import GameSession
 from app.models.user_model import User
+from app.models.strategy_model import BasicStrategy
 
 router = APIRouter(tags=["Analytics"])
 
@@ -92,4 +93,57 @@ def user_analytics(user_id: int, db: Session = Depends(get_db)):
         "win_rate": round(win_rate, 2),
         "profit": round(profit, 2),
         "total_bet": round(total_bet, 2)
+    }
+
+@router.get("/session/{session_id}/strategy_accuracy")
+def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db)):
+
+    session = db.query(GameSession).filter(GameSession.id == session_id).first()
+
+    if not session:
+        raise HTTPException(status_code=404, detail="Session not found")
+
+    hands = db.query(Hand).filter(Hand.session_id == session_id).all()
+
+    if not hands:
+        return {
+            "session_id": session_id,
+            "hands_evaluated": 0,
+            "correct_moves": 0,
+            "incorrect_moves": 0,
+            "strategy_accuracy": 0
+        }
+
+    correct = 0
+    incorrect = 0
+
+    for hand in hands:
+
+        if not hand.player_action:
+            continue
+
+        strategy = db.query(BasicStrategy).filter(
+            BasicStrategy.player_total == hand.player_score,
+            BasicStrategy.dealer_card == hand.dealer_score,
+            BasicStrategy.hand_type == "hard"
+        ).first()
+
+        if not strategy:
+            continue
+
+        if hand.player_action == strategy.recommended_action:
+            correct += 1
+        else:
+            incorrect += 1
+
+    total = correct + incorrect
+
+    accuracy = (correct / total * 100) if total else 0
+
+    return {
+        "session_id": session_id,
+        "hands_evaluated": total,
+        "correct_moves": correct,
+        "incorrect_moves": incorrect,
+        "strategy_accuracy": round(accuracy, 2)
     }

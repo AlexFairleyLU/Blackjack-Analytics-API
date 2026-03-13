@@ -1,6 +1,7 @@
 from pydantic import BaseModel
 
 class HandCreate(BaseModel):
+    player_action: str | None = None
     bet_amount: float
     player_score: int
     dealer_score: int
@@ -8,6 +9,7 @@ class HandCreate(BaseModel):
     is_win: bool
 
 class HandUpdate(BaseModel):
+    player_action: str | None = None
     bet_amount: float | None = None
     player_score: int | None = None
     dealer_score: int | None = None
@@ -17,6 +19,7 @@ class HandUpdate(BaseModel):
 class HandResponse(BaseModel):
     id: int
     session_id: int
+    player_action: str | None = None
     bet_amount: float
     player_score: int
     dealer_score: int

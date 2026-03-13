@@ -8,6 +8,7 @@ class Hand(Base):
     id = Column(Integer, primary_key=True, index=True)
     session_id = Column(Integer, ForeignKey("game_sessions.id"), nullable=False)
 
+    player_action = Column(String)
     bet_amount = Column(Float, nullable=False)
     player_score = Column(Integer, nullable=False)
     dealer_score = Column(Integer, nullable=False)

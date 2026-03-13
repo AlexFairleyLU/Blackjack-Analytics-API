@@ -41,6 +41,7 @@ def seed():
 
             for _ in range(20):  # 20 hands per session
 
+                player_action = random.choice(["hit", "stand", "double"])
                 bet = random.choice([10, 20, 50, 100])
                 player_score = random.randint(15, 23)
                 dealer_score = random.randint(15, 23)
@@ -53,6 +54,7 @@ def seed():
 
                 hand = Hand(
                     session_id=session.id,
+                    player_action=player_action,
                     bet_amount=bet,
                     player_score=player_score,
                     dealer_score=dealer_score,
