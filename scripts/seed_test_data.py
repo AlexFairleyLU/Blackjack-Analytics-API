@@ -1,8 +1,11 @@
+import sys
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
 from app.database import SessionLocal, engine, Base
 from app.models.user_model import User
 from app.models.session_model import GameSession
 from app.models.hand_model import Hand
-from app.models.strategy_model import BasicStrategy
 from app.routes.user_routes import hash_password
 
 import random
@@ -14,27 +17,9 @@ def seed():
     print("Seeding database...")
 
     # Optional: clear tables (safe for development only)
-    Base.metadata.drop_all(bind=engine)
-    Base.metadata.create_all(bind=engine)
-
-    strategy_data = [
-    (16, 10, "hard", "hit"),
-    (12, 3, "hard", "hit"),
-    (12, 4, "hard", "stand"),
-    (13, 2, "hard", "stand"),
-    (11, 6, "hard", "double"),
-    ]
-
-    for player_total, dealer_card, hand_type, action in strategy_data:
-        row = BasicStrategy(
-            player_total=player_total,
-            dealer_card=dealer_card,
-            hand_type=hand_type,
-            recommended_action=action
-        )
-        db.add(row)
-
-    db.commit()
+    db.query(Hand).delete()
+    db.query(GameSession).delete()
+    db.query(User).delete()
 
     # Create users
     user1 = User(username="alice", hashed_password=hash_password("password123"))
