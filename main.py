@@ -17,4 +17,15 @@ Base.metadata.create_all(bind=engine)
 
 @app.get("/")
 def root():
-    return {"message": "Blackjack Analytics API is running"}
+    return {
+        "api_name": "Blackjack Analytics API",
+        "description": "REST API for recording blackjack sessions and analysing player decisions using blackjack basic strategy.",
+        "documentation": "/docs",
+        "key_features": [
+            "User and session management",
+            "Blackjack hand recording",
+            "Session analytics",
+            "Blackjack strategy recommendation",
+            "Strategy accuracy analysis"
+        ]
+    }
