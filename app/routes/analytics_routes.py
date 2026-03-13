@@ -124,7 +124,7 @@ def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db)):
 
         strategy = db.query(BasicStrategy).filter(
             BasicStrategy.player_total == hand.player_score,
-            BasicStrategy.dealer_card == hand.dealer_score,
+            BasicStrategy.dealer_card == hand.dealer_upcard,
             BasicStrategy.hand_type == "hard"
         ).first()
 

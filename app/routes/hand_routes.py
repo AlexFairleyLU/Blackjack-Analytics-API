@@ -16,8 +16,10 @@ def create_hand(session_id: int, hand: HandCreate, db: Session = Depends(get_db)
 
     new_hand = Hand(
         session_id=session_id,
+        player_action=hand.player_action,
         bet_amount=hand.bet_amount,
         player_score=hand.player_score,
+        dealer_upcard=hand.dealer_upcard,
         dealer_score=hand.dealer_score,
         is_blackjack=hand.is_blackjack,
         is_win=hand.is_win

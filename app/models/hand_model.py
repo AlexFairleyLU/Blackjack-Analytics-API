@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, ForeignKey, Boolean, Float
+from sqlalchemy import Column, Integer, ForeignKey, Boolean, Float, String
 from sqlalchemy.orm import relationship
 from app.database import Base
 
@@ -11,6 +11,7 @@ class Hand(Base):
     player_action = Column(String)
     bet_amount = Column(Float, nullable=False)
     player_score = Column(Integer, nullable=False)
+    dealer_upcard = Column(Integer)
     dealer_score = Column(Integer, nullable=False)
 
     is_blackjack = Column(Boolean, default=False)

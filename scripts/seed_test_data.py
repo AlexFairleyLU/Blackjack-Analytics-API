@@ -44,7 +44,8 @@ def seed():
                 player_action = random.choice(["hit", "stand", "double"])
                 bet = random.choice([10, 20, 50, 100])
                 player_score = random.randint(15, 23)
-                dealer_score = random.randint(15, 23)
+                dealer_upcard = random.randint(2, 11)
+                dealer_score = random.randint(17, 23)
 
                 is_win = player_score <= 21 and (
                     dealer_score > 21 or player_score > dealer_score
@@ -57,6 +58,7 @@ def seed():
                     player_action=player_action,
                     bet_amount=bet,
                     player_score=player_score,
+                    dealer_upcard=dealer_upcard,
                     dealer_score=dealer_score,
                     is_win=is_win,
                     is_blackjack=is_blackjack
