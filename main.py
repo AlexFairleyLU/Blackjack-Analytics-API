@@ -4,7 +4,20 @@ from app.models import user_model
 from app.models.strategy_model import BasicStrategy
 from app.routes import user_routes, session_routes, hand_routes, analytics_routes, strategy_routes
 
-app = FastAPI(title="Blackjack Analytics API")
+app = FastAPI(
+    title="Blackjack Analytics API",
+    description="""
+A REST API for recording blackjack gameplay sessions and analysing player performance.
+
+Features include:
+- User and session management
+- Recording blackjack hands
+- Session statistics and analytics
+- Strategy recommendation based on Blackjack Basic Strategy
+- Evaluation of player decisions against optimal strategy
+""",
+    version="1.0.0",
+)
 
 app.include_router(user_routes.router)
 app.include_router(session_routes.router)

@@ -108,6 +108,14 @@ From this interface you can:
 * Test API requests
 * Inspect request and response formats
 
+A static version of the API documentation is also included in this repository:
+
+```
+api_documentation.pdf
+```
+
+Note on authentication: *This API does not implement authentication because it is intended as a demonstration and analytics system rather than a production service. All endpoints are publicly accessible to simplify testing through Swagger UI.*
+
 ---
 
 ## Seeding the Database
