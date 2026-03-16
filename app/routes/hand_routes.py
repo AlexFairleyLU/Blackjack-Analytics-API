@@ -7,7 +7,8 @@ from app.schemas.hand_schema import HandCreate, HandResponse, HandUpdate
 
 router = APIRouter(prefix="/sessions/{session_id}/hands", tags=["Hands"])
 
-@router.post("/", response_model=HandResponse)
+@router.post("/", response_model=HandResponse, status_code=201,
+            responses={404: {"description": "Session not found"}})
 def create_hand(session_id: int, hand: HandCreate, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
@@ -32,7 +33,8 @@ def create_hand(session_id: int, hand: HandCreate, db: Session = Depends(get_db)
     return new_hand
 
 
-@router.get("/", response_model=list[HandResponse])
+@router.get("/", response_model=list[HandResponse],
+            responses={404: {"description": "Session not found"}})
 def get_hands(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
@@ -42,7 +44,8 @@ def get_hands(session_id: int, db: Session = Depends(get_db)):
     hands = db.query(Hand).filter(Hand.session_id == session_id).all()
     return hands
 
-@router.put("/{hand_id}", response_model=HandResponse)
+@router.put("/{hand_id}", response_model=HandResponse,
+            responses={404: {"description": "Hand not found"}})
 def update_hand(session_id: int, hand_id: int, hand_update: HandUpdate, db: Session = Depends(get_db)):
 
     hand = db.query(Hand).filter(
@@ -63,7 +66,8 @@ def update_hand(session_id: int, hand_id: int, hand_update: HandUpdate, db: Sess
 
     return hand
 
-@router.delete("/{hand_id}", status_code=204)
+@router.delete("/{hand_id}", status_code=204,
+                responses={404: {"description": "Hand not found"}})
 def delete_hand(session_id: int, hand_id: int, db: Session = Depends(get_db)):
 
     hand = db.query(Hand).filter(

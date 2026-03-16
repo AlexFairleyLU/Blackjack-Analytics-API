@@ -12,7 +12,8 @@ pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 def hash_password(password: str):
     return pwd_context.hash(password)
 
-@router.post("/", response_model=UserResponse)
+@router.post("/", response_model=UserResponse, status_code=201,
+                responses={400: {"description": "User already exists"}})
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
@@ -29,14 +30,16 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 
     return new_user
 
-@router.get("/{user_id}", response_model=UserResponse)
+@router.get("/{user_id}", response_model=UserResponse,
+            responses={404: {"description": "User not found"}})
 def get_user(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-@router.put("/{user_id}", response_model=UserResponse)
+@router.put("/{user_id}", response_model=UserResponse,
+            responses={404: {"description": "User not found"}})
 def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == user_id).first()
@@ -56,7 +59,8 @@ def update_user(user_id: int, user_update: UserUpdate, db: Session = Depends(get
 
     return user
 
-@router.delete("/{user_id}", status_code=204)
+@router.delete("/{user_id}", status_code=204,
+                responses={404: {"description": "User not found"}})
 def delete_user(user_id: int, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == user_id).first()

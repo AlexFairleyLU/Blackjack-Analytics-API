@@ -7,7 +7,8 @@ from app.schemas.session_schema import SessionCreate, SessionResponse
 
 router = APIRouter(prefix="/sessions", tags=["Sessions"])
 
-@router.post("/", response_model=SessionResponse, status_code=201)
+@router.post("/", response_model=SessionResponse, status_code=201,
+            responses={404: {"description": "User not found"}})
 def create_session(session: SessionCreate, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == session.user_id).first()
@@ -22,7 +23,7 @@ def create_session(session: SessionCreate, db: Session = Depends(get_db)):
 
     return new_session
 
-@router.get("/{session_id}")
+@router.get("/{session_id}", responses={404: {"description": "Session not found"}})
 def get_session(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
@@ -31,7 +32,8 @@ def get_session(session_id: int, db: Session = Depends(get_db)):
 
     return session
 
-@router.get("/user/{user_id}", summary="Get all sessions for a user")
+@router.get("/user/{user_id}", summary="Get all sessions for a user",
+            responses={404: {"description": "Sessions not found"}})
 def get_user_sessions(user_id: int, db: Session = Depends(get_db)):
 
     sessions = db.query(GameSession).filter(GameSession.user_id == user_id).all()
@@ -40,7 +42,8 @@ def get_user_sessions(user_id: int, db: Session = Depends(get_db)):
 
     return sessions
 
-@router.delete("/{session_id}", status_code=204)
+@router.delete("/{session_id}", status_code=204,
+                responses={404: {"description": "Session not found"}})
 def delete_session(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()

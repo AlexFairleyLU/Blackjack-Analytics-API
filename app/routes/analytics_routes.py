@@ -9,7 +9,8 @@ from app.models.strategy_model import BasicStrategy
 
 router = APIRouter(tags=["Analytics"])
 
-@router.get("/session/{session_id}/analytics")
+@router.get("/session/{session_id}/analytics",
+            responses={404: {"description": "Session not found"}})
 def session_analytics(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
@@ -52,7 +53,8 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
         "average_player_score": round(avg_player_score, 2)
     }
 
-@router.get("/user/{user_id}/analytics")
+@router.get("/user/{user_id}/analytics",
+            responses={404: {"description": "User not found"}})
 def user_analytics(user_id: int, db: Session = Depends(get_db)):
 
     user = db.query(User).filter(User.id == user_id).first()
@@ -95,7 +97,8 @@ def user_analytics(user_id: int, db: Session = Depends(get_db)):
         "total_bet": round(total_bet, 2)
     }
 
-@router.get("/session/{session_id}/strategy_accuracy")
+@router.get("/session/{session_id}/strategy_accuracy",
+            responses={404: {"description": "Session not found"}})
 def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()

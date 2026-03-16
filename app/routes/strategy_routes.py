@@ -7,7 +7,7 @@ from app.models.strategy_model import BasicStrategy
 router = APIRouter(prefix="/strategy", tags=["Strategy"])
 
 
-@router.get("/recommendation")
+@router.get("/recommendation", responses={404: {"description": "Strategy not found"}})
 def get_strategy(
     player_total: int,
     dealer_card: int,
