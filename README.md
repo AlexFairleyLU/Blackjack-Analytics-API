@@ -37,6 +37,7 @@ project_root
 │   └── database.py   # Database configuration
 │
 ├── scripts
+│   ├── reset_database.py   # Recreates database 
 │   ├── seed_strategy.py   # Seeds blackjack strategy dataset
 │   └── seed_test_data.py  # Seeds example users, sessions, and hands
 │
@@ -69,6 +70,11 @@ pip install -r requirements.txt
 ## Database Setup
 
 This project uses PostgreSQL.
+
+Create a database using PostgreSQL (e.g. blackjack_db).
+The API reads the database connection string from the DATABASE_URL environment variable.
+
+*The application reads its database configuration from the DATABASE_URL environment variable, allowing different environments (development, testing, production) to use different databases without modifying the source code.*
 
 ## Running the API
 
