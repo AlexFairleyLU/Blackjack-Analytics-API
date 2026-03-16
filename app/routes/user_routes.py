@@ -15,6 +15,7 @@ def hash_password(password: str):
 @router.post("/", response_model=UserResponse, status_code=201,
                 responses={400: {"description": "User already exists"}})
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
+    
     existing_user = db.query(User).filter(User.username == user.username).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Username already exists")
@@ -33,6 +34,7 @@ def create_user(user: UserCreate, db: Session = Depends(get_db)):
 @router.get("/{user_id}", response_model=UserResponse,
             responses={404: {"description": "User not found"}})
 def get_user(user_id: int, db: Session = Depends(get_db)):
+
     user = db.query(User).filter(User.id == user_id).first()
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
