@@ -3,11 +3,13 @@ from sqlalchemy.orm import Session
 
 from app.database import get_db
 from app.models.strategy_model import BasicStrategy
+from app.schemas.strategy_schema import StrategyRecommendationResponse
 
 router = APIRouter(prefix="/strategy", tags=["Strategy"])
 
 
-@router.get("/recommendation", responses={404: {"description": "Strategy not found"}})
+@router.get("/recommendation", response_model=StrategyRecommendationResponse,
+             responses={404: {"description": "Strategy not found"}})
 def get_strategy(
     player_total: int,
     dealer_card: int,

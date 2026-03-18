@@ -6,10 +6,11 @@ from app.models.hand_model import Hand
 from app.models.session_model import GameSession
 from app.models.user_model import User
 from app.models.strategy_model import BasicStrategy
+from app.schemas.analytics_schema import SessionAnalyticsResponse, UserAnalyticsResponse, StrategyAccuracyResponse
 
 router = APIRouter(tags=["Analytics"])
 
-@router.get("/session/{session_id}/analytics",
+@router.get("/session/{session_id}/analytics", response_model=SessionAnalyticsResponse,
             responses={404: {"description": "Session not found"}})
 def session_analytics(session_id: int, db: Session = Depends(get_db)):
 
@@ -53,7 +54,7 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
         "average_player_score": round(avg_player_score, 2)
     }
 
-@router.get("/user/{user_id}/analytics",
+@router.get("/user/{user_id}/analytics", response_model=UserAnalyticsResponse,
             responses={404: {"description": "User not found"}})
 def user_analytics(user_id: int, db: Session = Depends(get_db)):
 
@@ -97,7 +98,7 @@ def user_analytics(user_id: int, db: Session = Depends(get_db)):
         "total_bet": round(total_bet, 2)
     }
 
-@router.get("/session/{session_id}/strategy_accuracy",
+@router.get("/session/{session_id}/strategy_accuracy", response_model=StrategyAccuracyResponse,
             responses={404: {"description": "Session not found"}})
 def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db)):
 
