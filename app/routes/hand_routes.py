@@ -32,7 +32,6 @@ def create_hand(session_id: int, hand: HandCreate, db: Session = Depends(get_db)
 
     return new_hand
 
-
 @router.get("/", response_model=list[HandResponse],
             responses={404: {"description": "Session not found"}})
 def get_hands(session_id: int, db: Session = Depends(get_db)):

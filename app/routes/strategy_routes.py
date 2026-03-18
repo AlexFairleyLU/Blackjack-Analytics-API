@@ -7,7 +7,6 @@ from app.schemas.strategy_schema import StrategyRecommendationResponse
 
 router = APIRouter(prefix="/strategy", tags=["Strategy"])
 
-
 @router.get("/recommendation", response_model=StrategyRecommendationResponse,
              responses={404: {"description": "Strategy not found"}})
 def get_strategy(

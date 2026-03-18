@@ -14,10 +14,8 @@ def seed():
     # clear existing data
     db.query(BasicStrategy).delete()
 
-
     def dealer_range():
         return range(2, 12)  # 11 = Ace
-
 
     def add_row(player_total, dealer_card, hand_type, action):
         row = BasicStrategy(
@@ -27,7 +25,6 @@ def seed():
             recommended_action=action
         )
         db.add(row)
-
 
     # ----------------------------
     # HARD TOTAL STRATEGY
@@ -69,7 +66,6 @@ def seed():
     for dealer in dealer_range():
         add_row(20, dealer, "hard", "stand")
 
-
     # ----------------------------
     # SOFT TOTAL STRATEGY
     # ----------------------------
@@ -102,7 +98,6 @@ def seed():
 
     for dealer in dealer_range():
         add_row(20, dealer, "soft", "stand")
-
 
     # ----------------------------
     # PAIR STRATEGY
