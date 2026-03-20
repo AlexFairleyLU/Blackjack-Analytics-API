@@ -38,10 +38,10 @@ jobs:
 
       - name: Install dependencies
         run: pip install -r requirements.txt
-		
+
       - name: Create tables
         run: python scripts/recreate_db.py
-		
+
       - name: Seed strategy data
         run: python scripts/seed_strategy.py
 
