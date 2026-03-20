@@ -7,16 +7,21 @@ from app.models.session_model import GameSession
 from app.models.user_model import User
 from app.models.strategy_model import BasicStrategy
 from app.schemas.analytics_schema import SessionAnalyticsResponse, UserAnalyticsResponse, StrategyAccuracyResponse
+from app.utils.dependencies import get_current_user
 
 router = APIRouter(tags=["Analytics"])
 
 @router.get("/session/{session_id}/analytics", response_model=SessionAnalyticsResponse,
             responses={404: {"description": "Session not found"}})
-def session_analytics(session_id: int, db: Session = Depends(get_db)):
+def session_analytics(session_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
+
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
+
+    if session.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorised")
 
     stats = db.query(
         func.count(Hand.id).label("total_hands"),
@@ -56,9 +61,13 @@ def session_analytics(session_id: int, db: Session = Depends(get_db)):
 
 @router.get("/user/{user_id}/analytics", response_model=UserAnalyticsResponse,
             responses={404: {"description": "User not found"}})
-def user_analytics(user_id: int, db: Session = Depends(get_db)):
+def user_analytics(user_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
 
     user = db.query(User).filter(User.id == user_id).first()
+
+    if user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorised")
+
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
 
@@ -100,12 +109,15 @@ def user_analytics(user_id: int, db: Session = Depends(get_db)):
 
 @router.get("/session/{session_id}/strategy_accuracy", response_model=StrategyAccuracyResponse,
             responses={404: {"description": "Session not found"}})
-def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db)):
+def session_strategy_accuracy(session_id: int, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
 
     session = db.query(GameSession).filter(GameSession.id == session_id).first()
 
     if not session:
         raise HTTPException(status_code=404, detail="Session not found")
+
+    if session.user_id != current_user.id:
+        raise HTTPException(status_code=403, detail="Not authorised")
 
     hands = db.query(Hand).filter(Hand.session_id == session_id).all()
 
