@@ -40,7 +40,7 @@ jobs:
         run: pip install -r requirements.txt
 
       - name: Create tables
-        run: python scripts/recreate_db.py
+        run: python scripts/reset_database.py
 
       - name: Seed strategy data
         run: python scripts/seed_strategy.py
