@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.hand_model import Hand
 from app.models.session_model import GameSession
+from app.models.user_model import User
 from app.schemas.hand_schema import HandCreate, HandResponse, HandUpdate
 from app.utils.dependencies import get_current_user
 
