@@ -3,16 +3,16 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.models.session_model import GameSession
 from app.models.user_model import User
-from app.schemas.session_schema import SessionCreate, SessionResponse
+from app.schemas.session_schema import SessionResponse
 from app.utils.dependencies import get_current_user
 
 router = APIRouter(prefix="/sessions", tags=["Sessions"])
 
 @router.post("/", response_model=SessionResponse, status_code=201,
             responses={404: {"description": "User not found"}})
-def create_session(session: SessionCreate, db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
+def create_session(db: Session = Depends(get_db), current_user: User = Depends(get_current_user)):
 
-    user = db.query(User).filter(User.id == session.user_id).first()
+    user = db.query(User).filter(User.id == current_user.id).first()
 
     if not user:
         raise HTTPException(status_code=404, detail="User not found")
