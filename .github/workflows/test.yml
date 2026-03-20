@@ -1,6 +1,9 @@
 name: Run Tests
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
 
 jobs:
   test:
@@ -34,14 +37,16 @@ jobs:
           python-version: "3.11"
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
-      - name: Run migrations / create tables
-        run: |
-          python scripts/recreate_db.py
-	  python scripts/seed_strategy.py
-          python scripts/seed_test_data.py
+      - name: Create tables
+        run: python scripts/reset_database.py
+
+      - name: Seed strategy data
+        run: python scripts/seed_strategy.py
+
+      - name: Seed test data
+        run: python scripts/seed_test_data.py
 
       - name: Run tests
         run: pytest
