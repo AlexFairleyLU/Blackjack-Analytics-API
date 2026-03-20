@@ -7,10 +7,13 @@ The system allows users to store blackjack hands, track session statistics, and 
 
 The API supports:
 
+* User authentication using JWT tokens
+* Protected endpoints (users can only access their own data)
 * Recording blackjack sessions and individual hands
 * Tracking betting outcomes and statistics
 * Analysing player performance
 * Comparing player decisions against **Blackjack Basic Strategy**
+* Automated testing with pytest
 
 ---
 
@@ -144,6 +147,28 @@ This will create:
 * Blackjack sessions
 * Multiple hands per session
 * Random player actions for analytics testing
+
+---
+
+## Authentication
+
+This API uses JWT-based authentication.
+
+1. Register a user via `/users`
+2. Log in via `/auth/login`
+4. Click "Authorize" in Swagger and enter login credentials
+
+---
+
+## Running Tests
+
+Run tests using:
+
+```
+pytest
+```
+
+Tests cover authentication, protected routes, and core functionality.
 
 ---
 
